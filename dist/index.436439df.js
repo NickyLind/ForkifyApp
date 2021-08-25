@@ -470,7 +470,7 @@ const timeout = function(s) {
     });
 }; // https://forkify-api.herokuapp.com/v2
 ///////////////////////////////////////
-const showRecipe = async function() {
+const controlRecipe = async function() {
     try {
         let id = window.location.hash.slice(1);
         if (!id) return;
@@ -481,13 +481,11 @@ const showRecipe = async function() {
     } catch (error) {
         console.error(error);
     }
-}; // showRecipe();
-[
-    'hashchange',
-    'load'
-].forEach((event)=>window.addEventListener(event, showRecipe)
-); // window.addEventListener('hashchange', showRecipe)
- // window.addEventListener('load', showRecipe)
+};
+const init = function() {
+    _recipeViewJsDefault.default.addHandlerRender(controlRecipe);
+};
+init();
 
 },{"./model.js":"6Yfb5","./views/recipeView.js":"9q0mt","core-js/stable":"eIyVg","regenerator-runtime":"cH8Iq","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}],"6Yfb5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -664,6 +662,13 @@ class RecipeView {
         const markup = _classPrivateMethodGet(this, _generateMarkup, _generateMarkup2).call(this);
         _classPrivateMethodGet(this, _clear, _clear2).call(this);
         _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
+    }
+    addHandlerRender(handler) {
+        [
+            'hashchange',
+            'load'
+        ].forEach((event)=>window.addEventListener(event, handler)
+        );
     }
 }
 function _clear2() {

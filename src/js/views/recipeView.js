@@ -29,6 +29,10 @@ class RecipeView {
     this.#parentElement.insertAdjacentHTML('afterbegin', markup);
   };
 
+  addHandlerRender(handler) {
+    ['hashchange', 'load'].forEach(event => window.addEventListener(event, handler));
+  }
+
   #generateMarkup() {
     console.log(this.#data);
     return `
@@ -123,7 +127,7 @@ class RecipeView {
     </li>
     `
   }
-  
+
 }
 
 export default new RecipeView();
