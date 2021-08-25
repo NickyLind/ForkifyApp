@@ -1,20 +1,23 @@
 {
-  "name": "forkifyapp",
+  "name": "forkify",
   "version": "1.0.0",
-  "description": "",
+  "description": "recipe app",
   "main": "index.js",
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build index.html"
   },
-  "author": "",
+  "author": "Nick Lindau",
   "license": "ISC",
   "devDependencies": {
-    "parcel": "^2.0.0-beta.1",
-    "sass": "^1.38.0"
+    "@parcel/transformer-image": "^2.0.0-rc.0",
+    "@parcel/transformer-sass": "^2.0.0-beta.2",
+    "parcel": "^2.0.0-beta.1"
   },
   "dependencies": {
-    "core-js": "^3.16.2",
-    "regenerator-runtime": "^0.13.9"
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/plugin-proposal-private-methods": "^7.14.5",
+    "@babel/plugin-syntax-class-properties": "^7.12.13",
+    "fractional": "^1.0.0"
   }
 }
