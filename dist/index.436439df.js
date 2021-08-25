@@ -479,7 +479,7 @@ const controlRecipe = async function() {
         //* 2) Rendering Recipe
         _recipeViewJsDefault.default.render(_modelJs.state.recipe);
     } catch (error) {
-        console.error(error);
+        _recipeViewJsDefault.default.renderError();
     }
 };
 const init = function() {
@@ -514,9 +514,9 @@ const loadRecipe = async function(id) {
             cookingTime: recipe.cooking_time,
             ingredients: recipe.ingredients
         };
-        console.log(state.recipe);
     } catch (error) {
         console.error(`error 💊🩸🛢 ${error.message}`);
+        throw error;
     }
 };
 
@@ -635,6 +635,8 @@ function _classApplyDescriptorSet(receiver, descriptor, value) {
 }
 var _parentElement = /*#__PURE__*/ new WeakMap();
 var _data = /*#__PURE__*/ new WeakMap();
+var _errorMessage = /*#__PURE__*/ new WeakMap();
+var _message = /*#__PURE__*/ new WeakMap();
 var _clear = /*#__PURE__*/ new WeakSet();
 var _generateMarkup = /*#__PURE__*/ new WeakSet();
 var _generateMarkupIngredient = /*#__PURE__*/ new WeakSet();
@@ -651,15 +653,33 @@ class RecipeView {
             writable: true,
             value: void 0
         });
+        _errorMessage.set(this, {
+            writable: true,
+            value: 'We could not find that recipe. Please try again'
+        });
+        _message.set(this, {
+            writable: true,
+            value: ''
+        });
         _defineProperty(this, "renderSpinner", function() {
             const markup = `\n    <div class="spinner">\n      <svg>\n        <use href="${_iconsSvgDefault.default}#icon-loader"></use>\n      </svg>\n    </div> \n    `;
-            _classPrivateMethodGet(this, _clear, _clear2);
+            _classPrivateMethodGet(this, _clear, _clear2).call(this);
             _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
         });
     }
     render(data) {
         _classPrivateFieldSet(this, _data, data);
         const markup = _classPrivateMethodGet(this, _generateMarkup, _generateMarkup2).call(this);
+        _classPrivateMethodGet(this, _clear, _clear2).call(this);
+        _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
+    }
+    renderError(message = _classPrivateFieldGet(this, _errorMessage)) {
+        const markup = `\n    <div class="error">\n      <div>\n        <svg>\n          <use href="${_iconsSvgDefault.default}#icon-alert-triangle"></use>\n        </svg>\n      </div>\n      <p>${message}</p>\n    </div>\n    `;
+        _classPrivateMethodGet(this, _clear, _clear2).call(this);
+        _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
+    }
+    renderMessage(message = _classPrivateFieldGet(this, _message)) {
+        const markup = `\n    <div class="message">\n      <div>\n        <svg>\n          <use href="${_iconsSvgDefault.default}#icon-smile"></use>\n        </svg>\n      </div>\n      <p>${message}</p>\n    </div>\n    `;
         _classPrivateMethodGet(this, _clear, _clear2).call(this);
         _classPrivateFieldGet(this, _parentElement).insertAdjacentHTML('afterbegin', markup);
     }
@@ -675,7 +695,6 @@ function _clear2() {
     _classPrivateFieldGet(this, _parentElement).innerHTML = '';
 }
 function _generateMarkup2() {
-    console.log(_classPrivateFieldGet(this, _data));
     return `\n      <figure class="recipe__fig">\n        <img src=${_classPrivateFieldGet(this, _data).image} alt=${_classPrivateFieldGet(this, _data).title} class="recipe__img" crossOrigin="anonymous"/>\n        <h1 class="recipe__title">\n          <span>${_classPrivateFieldGet(this, _data).title}</span>\n        </h1>\n      </figure>\n\n      <div class="recipe__details">\n        <div class="recipe__info">\n          <svg class="recipe__info-icon">\n            <use href="${_iconsSvgDefault.default}#icon-clock"></use>\n          </svg>\n          <span class="recipe__info-data recipe__info-data--minutes">${_classPrivateFieldGet(this, _data).cookingTime}</span>\n          <span class="recipe__info-text">minutes</span>\n        </div>\n        <div class="recipe__info">\n          <svg class="recipe__info-icon">\n            <use href="${_iconsSvgDefault.default}#icon-users"></use>\n          </svg>\n          <span class="recipe__info-data recipe__info-data--people">${_classPrivateFieldGet(this, _data).servings}</span>\n          <span class="recipe__info-text">servings</span>\n\n          <div class="recipe__info-buttons">\n            <button class="btn--tiny btn--increase-servings">\n              <svg>\n                <use href="${_iconsSvgDefault.default}#icon-minus-circle"></use>\n              </svg>\n            </button>\n            <button class="btn--tiny btn--increase-servings">\n              <svg>\n                <use href="${_iconsSvgDefault.default}#icon-plus-circle"></use>\n              </svg>\n            </button>\n          </div>\n        </div>\n\n        <div class="recipe__user-generated">\n          <svg>\n            <use href="${_iconsSvgDefault.default}#icon-user"></use>\n          </svg>\n        </div>\n        <button class="btn--round">\n          <svg class="">\n            <use href="${_iconsSvgDefault.default}#icon-bookmark-fill"></use>\n          </svg>\n        </button>\n      </div>\n\n      <div class="recipe__ingredients">\n        <h2 class="heading--2">Recipe ingredients</h2>\n        <ul class="recipe__ingredient-list">\n        ${_classPrivateFieldGet(this, _data).ingredients.map(_classPrivateMethodGet(this, _generateMarkupIngredient, _generateMarkupIngredient2)).join('')}\n\n        </ul>\n      </div>\n\n      <div class="recipe__directions">\n        <h2 class="heading--2">How to cook it</h2>\n        <p class="recipe__directions-text">\n          This recipe was carefully designed and tested by\n          <span class="recipe__publisher">${_classPrivateFieldGet(this, _data).publisher}</span>. Please check out\n          directions at their website.\n        </p>\n        <a\n          class="btn--small recipe__btn"\n          href="${_classPrivateFieldGet(this, _data).sourceUrl}"\n          target="_blank"\n        >\n          <span>Directions</span>\n          <svg class="search__icon">\n            <use href="${_iconsSvgDefault.default}#icon-arrow-right"></use>\n          </svg>\n        </a>\n      </div>\n    `;
 }
 function _generateMarkupIngredient2(ing) {
