@@ -13,7 +13,7 @@ export default class View {
   }
 
   update(data) {
-    
+
     this._data = data;
     const newMarkup = this._generateMarkup();
 
@@ -28,7 +28,7 @@ export default class View {
       // console.log(curEl, newEl.isEqualNode(curEl));
 
       //* Updates changes TEXT
-      if(!newEl.isEqualNode(curEl) && newEl.firstChild.nodeValue.trim() !== '') {
+      if(!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== '') {
         // console.log('😎', newEl.firstChild.nodeValue.trim());
         curEl.textContent = newEl.textContent;
       };
