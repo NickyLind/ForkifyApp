@@ -463,6 +463,8 @@ var _searchViewJs = require("./views/searchView.js");
 var _searchViewJsDefault = parcelHelpers.interopDefault(_searchViewJs);
 var _resultsViewJs = require("./views/resultsView.js");
 var _resultsViewJsDefault = parcelHelpers.interopDefault(_resultsViewJs);
+var _paginationViewJs = require("./views/paginationView.js");
+var _paginationViewJsDefault = parcelHelpers.interopDefault(_paginationViewJs);
 var _stable = require("core-js/stable");
 var _regeneratorRuntime = require("regenerator-runtime"); // const timeout = function (s) {
 //   return new Promise(function (_, reject) {
@@ -471,7 +473,9 @@ var _regeneratorRuntime = require("regenerator-runtime"); // const timeout = fun
 //     }, s * 1000);
 //   });
 // };
-if (module.hot) module.hot.accept();
+// if(module.hot) {
+//   module.hot.accept();
+// }
 const controlRecipe = async function() {
     try {
         let id = window.location.hash.slice(1);
@@ -490,19 +494,25 @@ const controlSearchResults = async function() {
         const query = _searchViewJsDefault.default.getQuery();
         if (!query) return; //* 2) Load Search Results
         await _modelJs.loadSearchResults(query); //* 3) Render Results
-        // resultsView.render(model.state.search.results)
-        _resultsViewJsDefault.default.render(_modelJs.getSearchResultsPage());
+        _resultsViewJsDefault.default.render(_modelJs.getSearchResultsPage()); //* 4) Render initial pagination buttons
+        _paginationViewJsDefault.default.render(_modelJs.state.search);
     } catch (error) {
         console.log(error);
     }
 };
+const controlPagination = function(goToPage) {
+    //* 1) Render NEW results
+    _resultsViewJsDefault.default.render(_modelJs.getSearchResultsPage(goToPage)); //* 2) Render NEW pagination buttons
+    _paginationViewJsDefault.default.render(_modelJs.state.search);
+};
 const init = function() {
     _recipeViewJsDefault.default.addHandlerRender(controlRecipe);
     _searchViewJsDefault.default.addHandlerSearch(controlSearchResults);
+    _paginationViewJsDefault.default.addHandlerClick(controlPagination);
 };
 init();
 
-},{"./model.js":"6Yfb5","./views/recipeView.js":"9q0mt","core-js/stable":"eIyVg","regenerator-runtime":"cH8Iq","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","./views/searchView.js":"51HTZ","./views/resultsView.js":"a6WEO"}],"6Yfb5":[function(require,module,exports) {
+},{"./model.js":"6Yfb5","./views/recipeView.js":"9q0mt","core-js/stable":"eIyVg","regenerator-runtime":"cH8Iq","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","./views/searchView.js":"51HTZ","./views/resultsView.js":"a6WEO","./views/paginationView.js":"c2v8w"}],"6Yfb5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "state", ()=>state
@@ -13346,7 +13356,6 @@ class ResultsView extends _viewJsDefault.default {
         _defineProperty(this, "_message", '');
     }
     _generateMarkup() {
-        console.log(this._data);
         return this._data.map(this._generateMarkupPreview).join('');
     }
     _generateMarkupPreview(result) {
@@ -13355,6 +13364,50 @@ class ResultsView extends _viewJsDefault.default {
 }
 exports.default = new ResultsView();
 
-},{"./View.js":"8rtS4","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","url:../../img/icons.svg":"iwCpK"}]},["drOo7","jKMjS"], "jKMjS", "parcelRequire3a11")
+},{"./View.js":"8rtS4","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc","url:../../img/icons.svg":"iwCpK"}],"c2v8w":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _viewJs = require("./View.js");
+var _viewJsDefault = parcelHelpers.interopDefault(_viewJs);
+var _iconsSvg = require("url:../../img/icons.svg");
+var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
+function _defineProperty(obj, key, value) {
+    if (key in obj) Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+    });
+    else obj[key] = value;
+    return obj;
+}
+class PaginationView extends _viewJsDefault.default {
+    constructor(...args){
+        super(...args);
+        _defineProperty(this, "_parentElement", document.querySelector('.pagination'));
+    }
+    addHandlerClick(handler) {
+        this._parentElement.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn--inline');
+            if (!btn) return;
+            const goToPage = +btn.dataset.goto;
+            handler(goToPage);
+        });
+    }
+    _generateMarkup() {
+        const currentPage = this._data.page;
+        const numPages = Math.ceil(this._data.results.length / this._data.resultsPerPage); //Page 1, and there are other pages
+        if (currentPage === 1 && numPages > 1) return `\n      <button data-goto="${currentPage + 1}" class="btn--inline pagination__btn--next">\n        <span>Page ${currentPage + 1}</span>\n        <svg class="search__icon">\n          <use href="${_iconsSvgDefault.default}#icon-arrow-right"></use>\n        </svg>\n      </button>\n      `;
+         // Last page
+        if (currentPage === numPages && numPages > 1) return `\n      <button data-goto="${currentPage - 1}" class="btn--inline pagination__btn--prev">\n        <svg class="search__icon">\n          <use href="${_iconsSvgDefault.default}#icon-arrow-left"></use>\n        </svg>\n        <span>Page ${currentPage - 1}</span>\n      </button>\n      `;
+         // Other page
+        if (currentPage < numPages) return `\n      <button data-goto="${currentPage - 1}" class="btn--inline pagination__btn--prev">\n        <svg class="search__icon">\n          <use href="${_iconsSvgDefault.default}#icon-arrow-left"></use>\n        </svg>\n        <span>Page ${currentPage - 1}</span>\n      </button>\n      <button data-goto="${currentPage + 1}" class="btn--inline pagination__btn--next">\n        <span>Page ${currentPage + 1}</span>\n        <svg class="search__icon">\n          <use href="${_iconsSvgDefault.default}#icon-arrow-right"></use>\n        </svg>\n      </button>\n      `;
+         //Page 1, and there are no other pages
+        return '';
+    }
+}
+exports.default = new PaginationView();
+
+},{"./View.js":"8rtS4","url:../../img/icons.svg":"iwCpK","@parcel/transformer-js/src/esmodule-helpers.js":"JacNc"}]},["drOo7","jKMjS"], "jKMjS", "parcelRequire3a11")
 
 //# sourceMappingURL=index.436439df.js.map
