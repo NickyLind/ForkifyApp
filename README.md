@@ -15,12 +15,13 @@ This application showcases OOP using vanilla JS with asynchronous AJAX calls and
 - Ability to bookmark recpies using local storage
 - Clicking bookmarked recipes will highlight the recipe in the bookmarks dropdown as well as display the recipe in the main view
 - Users can add recipes that will be stored in local storage as well as the API and added to their bookmarks
+- Recipes that user's have added are exclusive to their API key and display an icon the shows that it belongs to them
 
 ## **_Known Issues/Potential Updates_**
 
 _Due to the nature of the application really only being created to showcase OOP in vanilla JS some features are purposefully omitted._
 
-- When errors or success messages are rendered when clicking 'add recipe' the messages won't reset unless the page in reloaded
+- When errors or success messages are rendered when clicking 'add recipe' the messages won't reset unless the page is reloaded
 - Streamlining the add recipe process so that the form doesn't require a specific format to be submitted
 - Adding authentication and authorization could be a future goal
 
